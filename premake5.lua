@@ -1,5 +1,5 @@
 -- Config --
-PLUGIN_NAME = "NewPlugin" -- name of the plugin (UpperCamelCase recommended), used for the workspace and project names
+PLUGIN_NAME = "AlloyWindow" -- name of the plugin (UpperCamelCase recommended), used for the workspace and project names
 OUTPUT_DIR = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}" -- e.g. Debug-Windows-x86_64
 
 -- Plugin Workspace --
@@ -14,6 +14,9 @@ workspace (PLUGIN_NAME .. "_workspace")
 		"Release",
 		"Dist"
 	}
+
+-- Include External Premake Files --
+include ("plugin/" .. PLUGIN_NAME .. "/external")
 
 -- Include Directories Table --
 IncludeDirs = {}
@@ -61,6 +64,14 @@ project (PLUGIN_NAME)
 	targetdir ("bin/" .. OUTPUT_DIR .. "/%{prj.name}")
 	objdir ("int/" .. OUTPUT_DIR .. "/%{prj.name}")
 
+	os.mkdir(IncludeDirs["Plugin"])
+	os.mkdir(IncludeDirs["External"])
+
+	links
+	{
+		"glfw"
+	}
+
 	files
 	{
 		"plugin/" .. PLUGIN_NAME .. "/src/**.h",
@@ -99,6 +110,13 @@ project "Test"
 
 	targetdir ("bin/" .. OUTPUT_DIR .. "/%{prj.name}")
 	objdir ("int/" .. OUTPUT_DIR .. "/%{prj.name}")
+
+	os.mkdir(IncludeDirs["Test"])
+
+	links
+	{
+		PLUGIN_NAME
+	}
 	
 	files
 	{

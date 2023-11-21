@@ -1,3 +1,6 @@
 [submodule "AlloyCore"]
 	path = AlloyCore
 	url = https://github.com/Thoomas247/AlloyCore
+[submodule "plugin/AlloyWindow/external/glfw"]
+	path = plugin/AlloyWindow/external/glfw
+	url = https://github.com/glfw/glfw

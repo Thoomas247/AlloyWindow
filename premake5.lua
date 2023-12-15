@@ -1,6 +1,6 @@
 -- Config --
 PLUGIN_NAME = "AlloyWindow" -- name of the plugin (UpperCamelCase recommended), used for the workspace and project names
-OUTPUT_DIR = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}" -- e.g. Debug-Windows-x86_64
+OUTPUT_DIR = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}" -- e.g. Debug-windows-x86_64
 
 -- Plugin Workspace --
 workspace (PLUGIN_NAME .. "_workspace")
@@ -21,9 +21,9 @@ include ("plugin/" .. PLUGIN_NAME .. "/external")
 -- Include Directories Table --
 IncludeDirs = {}
 
-IncludeDirs["AlloyCore"] = "AlloyCore/lib/AlloyCore/src"
+IncludeDirs["AlloyCore"] = "AlloyCore/lib/AlloyCore/include"
 IncludeDirs["AlloyCoreExt"] = "AlloyCore/lib/AlloyCore/external"
-IncludeDirs["Plugin"] = "plugin/" .. PLUGIN_NAME .. "/src"
+IncludeDirs["Plugin"] = "plugin/" .. PLUGIN_NAME .. "/include"
 IncludeDirs["External"] = "plugin/" .. PLUGIN_NAME .. "/external"
 IncludeDirs["Test"] = "plugin/Test/src"
 
@@ -34,22 +34,6 @@ defines
 	"NOGDI",				   						-- WinGDI.h defines dumb macros, remove it
 	"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING" -- spdlog causes warnings, suppress them
 }
-
--- Config Specific Settings --
-filter "configurations:Debug"
-	defines "AL_DEBUG"
-	runtime "Debug"
-	symbols "On"
-
-filter "configurations:Release"
-	defines "AL_RELEASE"
-	runtime "Release"
-	optimize "On"
-
-filter "configurations:Dist"
-	defines "AL_DIST"
-	runtime "Release"
-	optimize "On"
 
 -- Plugin Project --
 project (PLUGIN_NAME)
@@ -64,7 +48,8 @@ project (PLUGIN_NAME)
 	targetdir ("bin/" .. OUTPUT_DIR .. "/%{prj.name}")
 	objdir ("int/" .. OUTPUT_DIR .. "/%{prj.name}")
 
-	os.mkdir(IncludeDirs["Plugin"])
+	os.mkdir("plugin/" .. PLUGIN_NAME .. "/src/" .. PLUGIN_NAME)
+	os.mkdir("plugin/" .. PLUGIN_NAME .. "/include/" .. PLUGIN_NAME)
 	os.mkdir(IncludeDirs["External"])
 
 	links
@@ -88,15 +73,30 @@ project (PLUGIN_NAME)
 		IncludeDirs["External"]
 	}
 
-    -- system specific macro definitions
+	filter "configurations:Debug"
+		defines "AL_DEBUG"
+		runtime "Debug"
+		symbols "On"
+
+	filter "configurations:Release"
+		defines "AL_RELEASE"
+		runtime "Release"
+		optimize "On"
+
+	filter "configurations:Dist"
+		defines "AL_DIST"
+		runtime "Release"
+		optimize "On"
+
+	-- system specific macro definitions
 	filter "system:Windows"
 		defines "AL_SYSTEM_WINDOWS"
 
 	filter "system:Unix"
-      	defines "AL_SYSTEM_LINUX"
+		defines "AL_SYSTEM_LINUX"
 
-   	filter "system:Mac"
-      	defines "AL_SYSTEM_MAC"
+	filter "system:Mac"
+		defines "AL_SYSTEM_MAC"
 
 -- Test Project --
 project "Test"
@@ -112,18 +112,19 @@ project "Test"
 	objdir ("int/" .. OUTPUT_DIR .. "/%{prj.name}")
 
 	os.mkdir(IncludeDirs["Test"])
-
+	
 	links
 	{
+		"AlloyCore/bin/" .. OUTPUT_DIR .. "/AlloyCore/AlloyCore.lib",
 		PLUGIN_NAME
 	}
-	
+
 	files
 	{
-		"plugin/Test/src/**.h",
-		"plugin/Test/src/**.c",
-		"plugin/Test/src/**.hpp",
-		"plugin/Test/src/**.cpp"
+		IncludeDirs["Test"] .. "/**.h",
+		IncludeDirs["Test"] .. "/**.c",
+		IncludeDirs["Test"] .. "/**.hpp",
+		IncludeDirs["Test"] .. "/**.cpp"
 	}
 
 	includedirs
@@ -139,3 +140,18 @@ project "Test"
 	{ 
 		"-IGNORE:4099"  -- hide .pdb file missing warning
 	}
+
+	filter "configurations:Debug"
+		defines "AL_DEBUG"
+		runtime "Debug"
+		symbols "On"
+
+	filter "configurations:Release"
+		defines "AL_RELEASE"
+		runtime "Release"
+		optimize "On"
+
+	filter "configurations:Dist"
+		defines "AL_DIST"
+		runtime "Release"
+		optimize "On"

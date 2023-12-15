@@ -1,5 +1,5 @@
 #include "AlloyCore/app/Application.hpp"
-#include "WindowPlugin.hpp"
+#include "AlloyWindow/WindowPlugin.hpp"
 
 int main()
 {

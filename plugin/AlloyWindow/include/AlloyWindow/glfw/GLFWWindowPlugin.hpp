@@ -9,6 +9,6 @@ namespace Alloy::Internal
 	class GLFWWindowPlugin : public Plugin
 	{
 	public:
-		void Build(Application& app) override;
+		void Build(Commands commands) override;
 	};
 }

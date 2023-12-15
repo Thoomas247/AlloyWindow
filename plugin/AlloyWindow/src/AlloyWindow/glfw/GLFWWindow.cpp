@@ -1,7 +1,8 @@
-#include "GLFWWindow.hpp"
-#include "AlloyCore/log/Log.hpp"
+#include "AlloyWindow/glfw/GLFWWindow.hpp"
 
 #include "glfw/include/GLFW/glfw3.h"
+
+#include "AlloyCore/log/Log.hpp"
 
 namespace Alloy::Internal
 {

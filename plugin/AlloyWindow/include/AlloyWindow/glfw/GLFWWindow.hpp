@@ -1,5 +1,5 @@
 #pragma once
-#include "Window.hpp"
+#include "AlloyWindow/Window.hpp"
 
 struct GLFWwindow;
 
